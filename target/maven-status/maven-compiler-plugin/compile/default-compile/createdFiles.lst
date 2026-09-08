@@ -1,0 +1,12 @@
+me\korsidev\aesphrotraed\events\ChunkCleanupEvent.class
+me\korsidev\aesphrotraed\data\PlayerMemory.class
+me\korsidev\aesphrotraed\command\FriendsCommand.class
+me\korsidev\aesphrotraed\command\ServerTitlesCommand.class
+me\korsidev\aesphrotraed\events\GeneralEvents.class
+me\korsidev\aesphrotraed\command\SetTitleCommand.class
+me\korsidev\aesphrotraed\util\TitleRegistry.class
+me\korsidev\aesphrotraed\Aesphrotraed.class
+me\korsidev\aesphrotraed\events\ChatEvent.class
+me\korsidev\aesphrotraed\util\PlayerUtility.class
+me\korsidev\aesphrotraed\util\FriendManager.class
+me\korsidev\aesphrotraed\util\NametagUtility.class

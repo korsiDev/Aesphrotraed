@@ -1,0 +1,15 @@
+titles:
+  newbie:
+    display: §aNewbie
+  degenerate:
+    display: §cDegenerate
+  lucky:
+    display: §aLucky!
+  unlucky:
+    display: §cUnlucky..
+  highroller:
+    display: §dHigh Roller
+  millionaire:
+    display: §6Millionaire
+  betatester:
+    display: §d§lBeta Tester

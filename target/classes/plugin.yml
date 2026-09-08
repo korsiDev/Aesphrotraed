@@ -1,0 +1,22 @@
+name: Aesphrotraed
+description: $description
+prefix: AES
+version: '1.0'
+
+main: me.korsidev.aesphrotraed.Aesphrotraed
+api-version: '26.2'
+load: POSTWORLD
+
+authors: [ korsiDev ]
+
+depend: [LuckPerms]
+
+commands:
+  setTitle:
+    description: Set your title.
+  serverTitles:
+    description: Edit Serverwide Titles.
+    permission: aesphrotraed.serverTitles
+  friends:
+    aliases: [friend, f]
+    description: Look who's your friend!
