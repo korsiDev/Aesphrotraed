@@ -36,7 +36,6 @@ public class GeneralEvents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
         PlayerMemory memory = playerDataManager.loadPlayer(player);
 
         if (memory == null) {

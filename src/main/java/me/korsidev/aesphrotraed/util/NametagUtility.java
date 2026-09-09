@@ -25,14 +25,14 @@ public class NametagUtility {
     private final Aesphrotraed plugin;
     private final TitleRegistry registry;
     private final Map<UUID, TextDisplay> activeTags = new HashMap<>();
+    private final NamespacedKey nametagKey;
 
     public NametagUtility(Aesphrotraed plugin, TitleRegistry registry) {
         this.plugin = plugin;
         this.registry = registry;
+        this.nametagKey = new NamespacedKey(plugin, "nametag");
     }
 
-    private static final NamespacedKey NAMETAG_KEY =
-            new NamespacedKey(plugin, "nametag");
 
     private void hideDefaultNametag(Player player) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -87,7 +87,7 @@ public class NametagUtility {
             display.setTransformation(transformation);
 
             display.getPersistentDataContainer().set(
-                    NAMETAG_KEY,
+                    nametagKey,
                     PersistentDataType.BYTE,
                     (byte) 1
             );
@@ -123,7 +123,7 @@ public class NametagUtility {
     public void removeAllNametags() {
         // Create a copy of the values to avoid ConcurrentModificationException while removing
         new java.util.ArrayList<>(activeTags.values()).forEach(display -> {
-            if (display != null && display.isValid()) {
+            if (display != null && display.getPersistentDataContainer().has(nametagKey, PersistentDataType.BYTE)) {
                 display.remove();
             }
         });

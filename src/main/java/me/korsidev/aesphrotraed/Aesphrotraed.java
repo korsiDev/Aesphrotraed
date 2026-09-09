@@ -15,6 +15,10 @@ import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+// TODO: STOP SPAMMING WHEN SETTITLE OR DELETE FRIEND OR ACCEPT FRIEND...
+// TODO: SCOREBOARD UND ECONOMY FERTIG MACHEN
+
+
 public final class Aesphrotraed extends JavaPlugin {
     private NametagUtility nametagUtility;
     private TitleRegistry titleRegistry;
@@ -50,8 +54,8 @@ public final class Aesphrotraed extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChatEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new ChunkCleanupEvent(), this);
 
-        getCommand("serverTitles").setExecutor(new ServerTitlesCommand(this, titleRegistry));
-        getCommand("setTitle").setExecutor(new SetTitleCommand(this, titleRegistry));
+        getCommand("serverTitles").setExecutor(new ServerTitlesCommand(this, titleRegistry, playerDataManager));
+        getCommand("setTitle").setExecutor(new SetTitleCommand(this, titleRegistry, playerDataManager));
         getCommand("friends").setExecutor(new FriendsCommand(this, friendManager));
 
         getLogger().info("Plugin has been enabled.");

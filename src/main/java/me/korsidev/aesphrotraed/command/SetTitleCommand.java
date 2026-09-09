@@ -1,6 +1,7 @@
 package me.korsidev.aesphrotraed.command;
 
 import me.korsidev.aesphrotraed.Aesphrotraed;
+import me.korsidev.aesphrotraed.data.PlayerDataManager;
 import me.korsidev.aesphrotraed.util.PlayerUtility;
 import me.korsidev.aesphrotraed.util.TitleRegistry;
 import net.kyori.adventure.text.Component;
@@ -18,10 +19,12 @@ import java.util.List;
 public class SetTitleCommand implements CommandExecutor {
     private final Aesphrotraed plugin;
     private final TitleRegistry registry;
+    private final PlayerDataManager playerDataManager;
 
-    public SetTitleCommand(Aesphrotraed plugin, TitleRegistry registry) {
+    public SetTitleCommand(Aesphrotraed plugin, TitleRegistry registry, PlayerDataManager playerDataManager) {
         this.plugin = plugin;
         this.registry = registry;
+        this.playerDataManager = playerDataManager;
     }
 
     @Override
@@ -89,10 +92,12 @@ public class SetTitleCommand implements CommandExecutor {
         String newDisplay = registry.getDisplay(selectedId);
         memory.setEquippedTitle(selectedId);
 
+        playerDataManager.savePlayer(player, memory);
+
         // Force update their nametag
         plugin.getNametagUtility().updateNametag(player);
 
-        player.sendMessage("§aSuccessfully equipped '" + newDisplay + "' as your title!");
+        player.sendMessage("§aSuccessfully equipped '" + newDisplay + "§r§a' as your title!");
         return true;
     }
 }
