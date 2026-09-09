@@ -1,8 +1,10 @@
 package me.korsidev.aesphrotraed;
 
+import me.korsidev.aesphrotraed.command.EconomyCommand;
 import me.korsidev.aesphrotraed.command.FriendsCommand;
 import me.korsidev.aesphrotraed.command.ServerTitlesCommand;
 import me.korsidev.aesphrotraed.command.SetTitleCommand;
+import me.korsidev.aesphrotraed.data.EconomyManager;
 import me.korsidev.aesphrotraed.data.PlayerDataManager;
 import me.korsidev.aesphrotraed.events.ChatEvent;
 import me.korsidev.aesphrotraed.events.ChunkCleanupEvent;
@@ -24,6 +26,7 @@ public final class Aesphrotraed extends JavaPlugin {
     private TitleRegistry titleRegistry;
     private GeneralEvents generalEvents;
     private PlayerDataManager playerDataManager;
+    private EconomyManager economyManager;
     private FriendManager friendManager;
     private LuckPerms luckPerms;
 
@@ -37,6 +40,7 @@ public final class Aesphrotraed extends JavaPlugin {
         this.titleRegistry = new TitleRegistry(this);
         this.nametagUtility = new NametagUtility(this, titleRegistry);
         this.playerDataManager = new PlayerDataManager(this);
+        this.economyManager = new EconomyManager();
         this.friendManager = new FriendManager();
         this.luckPerms = LuckPermsProvider.get();
 
@@ -57,6 +61,7 @@ public final class Aesphrotraed extends JavaPlugin {
         getCommand("serverTitles").setExecutor(new ServerTitlesCommand(this, titleRegistry, playerDataManager));
         getCommand("setTitle").setExecutor(new SetTitleCommand(this, titleRegistry, playerDataManager));
         getCommand("friends").setExecutor(new FriendsCommand(this, friendManager));
+        getCommand("economy").setExecutor(new EconomyCommand(this));
 
         getLogger().info("Plugin has been enabled.");
 
@@ -76,6 +81,10 @@ public final class Aesphrotraed extends JavaPlugin {
 
     public NametagUtility getNametagUtility() {
         return this.nametagUtility;
+    }
+
+    public EconomyManager getEconomyManager() {
+        return this.economyManager;
     }
 
     @Override

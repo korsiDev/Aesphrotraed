@@ -60,7 +60,7 @@ public class NametagUtility {
 
         Component line1 = LegacyComponentSerializer.legacyAmpersand().deserialize(title);
         Component line2 = LegacyComponentSerializer.legacyAmpersand().deserialize(lpPrefix + player.getName());
-        Component line3 = LegacyComponentSerializer.legacyAmpersand().deserialize("&r&aA$" + balance);
+        Component line3 = LegacyComponentSerializer.legacyAmpersand().deserialize("&r&aA$" + plugin.getEconomyManager().formatBalance(balance));
 
         return line1.append(Component.newline())
                 .append(line2).append(Component.newline())

@@ -13,10 +13,10 @@ depend: [LuckPerms]
 
 commands:
   setTitle:
-    description: Set your title.
+    description: ''
   serverTitles:
-    description: Edit Serverwide Titles.
     permission: aesphrotraed.serverTitles
   friends:
     aliases: [friend, f]
-    description: Look who's your friend!
+  economy:
+    permission: aesphrotraed.economy
