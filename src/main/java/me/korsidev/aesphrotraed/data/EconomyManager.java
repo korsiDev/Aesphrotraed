@@ -82,9 +82,9 @@ public class EconomyManager {
         return formatted + suffix;
     }
 
-    public String formatBalance(long amount) {
+    public String formatBalanceCompact(long amount) {
         if (amount < 100_000) {
-            return String.format("%d", amount);
+            return String.format("%,d", amount);
         }
 
         if (amount < 1_000_000) {
@@ -96,6 +96,67 @@ public class EconomyManager {
         }
 
         return formatCompact(amount, 1_000_000_000, "b");
+    }
+
+    public String formatBalanceFull(long amount) {
+        return String.format(Locale.US, "%,d", amount);
+    }
+
+    public Long parseAmount(String input) {
+        if (input == null || input.isBlank()) {
+            return null;
+        }
+
+        input = input.trim().toLowerCase(Locale.US);
+
+        double multiplier = 1;
+
+        if (input.endsWith("k")) {
+            multiplier = 1_000;
+            input = input.substring(0, input.length() - 1);
+        } else if (input.endsWith("m")) {
+            multiplier = 1_000_000;
+            input = input.substring(0, input.length() - 1);
+        } else if (input.endsWith("b")) {
+            multiplier = 1_000_000_000;
+            input = input.substring(0, input.length() - 1);
+        }
+
+        try {
+
+            double value = Double.parseDouble(input);
+            double result = value * multiplier;
+
+            if (result < 0 || result > Long.MAX_VALUE) {
+                return null;
+            }
+
+            return (long) result;
+
+        } catch(NumberFormatException e) {
+            return null;
+        }
+
+    }
+
+    public boolean transfer(Player from, Player to, long amount) {
+        if (from == null || to == null) {
+            return false;
+        }
+
+        if (amount <= 0) {
+            return false;
+        }
+
+        if (!hasBalance(from, amount)) {
+            return false;
+        }
+
+        removeBalance(from, amount);
+        addBalance(to, amount);
+
+        return true;
+
     }
 
 }

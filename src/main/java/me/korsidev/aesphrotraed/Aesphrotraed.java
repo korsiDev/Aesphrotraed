@@ -1,9 +1,6 @@
 package me.korsidev.aesphrotraed;
 
-import me.korsidev.aesphrotraed.command.EconomyCommand;
-import me.korsidev.aesphrotraed.command.FriendsCommand;
-import me.korsidev.aesphrotraed.command.ServerTitlesCommand;
-import me.korsidev.aesphrotraed.command.SetTitleCommand;
+import me.korsidev.aesphrotraed.command.*;
 import me.korsidev.aesphrotraed.data.EconomyManager;
 import me.korsidev.aesphrotraed.data.PlayerDataManager;
 import me.korsidev.aesphrotraed.events.ChatEvent;
@@ -11,6 +8,7 @@ import me.korsidev.aesphrotraed.events.ChunkCleanupEvent;
 import me.korsidev.aesphrotraed.events.GeneralEvents;
 import me.korsidev.aesphrotraed.util.FriendManager;
 import me.korsidev.aesphrotraed.util.NametagUtility;
+import me.korsidev.aesphrotraed.util.ScoreboardManager;
 import me.korsidev.aesphrotraed.util.TitleRegistry;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -29,6 +27,7 @@ public final class Aesphrotraed extends JavaPlugin {
     private EconomyManager economyManager;
     private FriendManager friendManager;
     private LuckPerms luckPerms;
+    private ScoreboardManager scoreboardManager;
 
     @Override
     public void onEnable() {
@@ -41,12 +40,15 @@ public final class Aesphrotraed extends JavaPlugin {
         this.nametagUtility = new NametagUtility(this, titleRegistry);
         this.playerDataManager = new PlayerDataManager(this);
         this.economyManager = new EconomyManager();
+
+        this.scoreboardManager = new ScoreboardManager(this);
+        this.scoreboardManager.startUpdateTask();
+
         this.friendManager = new FriendManager();
         this.luckPerms = LuckPermsProvider.get();
 
         this.generalEvents = new GeneralEvents(
                 this,
-                nametagUtility,
                 playerDataManager
         );
 
@@ -62,6 +64,7 @@ public final class Aesphrotraed extends JavaPlugin {
         getCommand("setTitle").setExecutor(new SetTitleCommand(this, titleRegistry, playerDataManager));
         getCommand("friends").setExecutor(new FriendsCommand(this, friendManager));
         getCommand("economy").setExecutor(new EconomyCommand(this));
+        getCommand("pay").setExecutor(new PayCommand(this));
 
         getLogger().info("Plugin has been enabled.");
 
@@ -85,6 +88,10 @@ public final class Aesphrotraed extends JavaPlugin {
 
     public EconomyManager getEconomyManager() {
         return this.economyManager;
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return this.scoreboardManager;
     }
 
     @Override

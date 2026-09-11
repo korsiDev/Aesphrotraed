@@ -5,6 +5,7 @@ import me.korsidev.aesphrotraed.data.PlayerDataManager;
 import me.korsidev.aesphrotraed.data.PlayerMemory;
 import me.korsidev.aesphrotraed.util.NametagUtility;
 import me.korsidev.aesphrotraed.util.PlayerUtility;
+import me.korsidev.aesphrotraed.util.ScoreboardManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,15 +23,16 @@ public class GeneralEvents implements Listener {
     private final Aesphrotraed plugin;
     private final NametagUtility nametagUtility;
     private final PlayerDataManager playerDataManager;
+    private final ScoreboardManager scoreboardManager;
 
     public GeneralEvents(
             Aesphrotraed plugin,
-            NametagUtility nametagUtility,
             PlayerDataManager playerDataManager
     ) {
         this.plugin = plugin;
-        this.nametagUtility = nametagUtility;
+        this.nametagUtility = plugin.getNametagUtility();
         this.playerDataManager = playerDataManager;
+        this.scoreboardManager = plugin.getScoreboardManager();
     }
 
     @EventHandler
@@ -50,6 +52,11 @@ public class GeneralEvents implements Listener {
         Bukkit.getScheduler().runTaskLater(
                 plugin,
                 () -> nametagUtility.createNametag(player),
+                2L
+        );
+        Bukkit.getScheduler().runTaskLater(
+                plugin,
+                () -> scoreboardManager.createScoreboard(player),
                 2L
         );
     }

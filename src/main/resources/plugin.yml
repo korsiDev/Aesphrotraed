@@ -20,3 +20,8 @@ commands:
     aliases: [friend, f]
   economy:
     permission: aesphrotraed.economy
+  pay:
+    description: Give away some money
+  purse:
+    aliases: [balance, bal, b]
+    description: Look at your purse

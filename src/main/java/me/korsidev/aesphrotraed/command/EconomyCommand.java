@@ -44,7 +44,7 @@ public class EconomyCommand implements TabExecutor {
 
                 long balance = economyManager.getBalance(player);
 
-                player.sendMessage("§6Your balance: §aA$" + economyManager.formatBalance(balance));
+                player.sendMessage("§6Your balance: §aA$" + economyManager.formatBalanceFull(balance));
 
             }
 
@@ -55,7 +55,7 @@ public class EconomyCommand implements TabExecutor {
                     return true;
                 }
 
-                Long amount = parseAmount(strings[1]);
+                Long amount = economyManager.parseAmount(strings[1]);
 
                 if (amount == null || amount <= 0) {
                     player.sendMessage("§cPlease enter a valid positive amount. §o('" + strings[1] + "').");
@@ -64,8 +64,8 @@ public class EconomyCommand implements TabExecutor {
 
                 economyManager.addBalance(player, amount);
 
-                player.sendMessage("§aAdded §oA$" + economyManager.formatBalance(amount) + "§r§a.");
-                player.sendMessage("§aNew balance: §oA$" + economyManager.formatBalance(economyManager.getBalance(player)) + "§r§a.");
+                player.sendMessage("§aAdded §oA$" + economyManager.formatBalanceFull(amount) + "§r§a.");
+                player.sendMessage("§aNew balance: §oA$" + economyManager.formatBalanceFull(economyManager.getBalance(player)) + "§r§a.");
 
                 nametagUtility.updateNametag(player);
 
@@ -77,7 +77,7 @@ public class EconomyCommand implements TabExecutor {
                     return true;
                 }
 
-                Long amount = parseAmount(strings[1]);
+                Long amount = economyManager.parseAmount(strings[1]);
 
                 if (amount == null || amount <= 0) {
                     player.sendMessage("§cPlease enter a valid positive amount. §o('" + strings[1] + "').");
@@ -91,13 +91,13 @@ public class EconomyCommand implements TabExecutor {
 
                 player.sendMessage(
                         "§cRemoved §a§oA$" +
-                                economyManager.formatBalance(amount) +
+                                economyManager.formatBalanceFull(amount) +
                                 "§c."
                 );
 
                 player.sendMessage(
                         "§aNew balance: §a§oA$" +
-                                economyManager.formatBalance(
+                                economyManager.formatBalanceFull(
                                         economyManager.getBalance(player)
                                 ) + "§r§a."
                 );
@@ -113,7 +113,7 @@ public class EconomyCommand implements TabExecutor {
                     return true;
                 }
 
-                Long amount = parseAmount(strings[1]);
+                Long amount = economyManager.parseAmount(strings[1]);
 
                 if (amount == null || amount < 0) {
                     player.sendMessage("§cPlease enter a valid amount. §o('" + strings[1] + "').");
@@ -124,7 +124,7 @@ public class EconomyCommand implements TabExecutor {
 
                 player.sendMessage(
                         "§aBalance set to §oA$" +
-                                economyManager.formatBalance(amount) +
+                                economyManager.formatBalanceFull(amount) +
                                 "§r§a."
                 );
 
@@ -136,15 +136,6 @@ public class EconomyCommand implements TabExecutor {
         }
 
         return true;
-    }
-
-    private Long parseAmount(String input) {
-
-        try {
-            return Long.parseLong(input);
-        } catch (NumberFormatException exception) {
-            return null;
-        }
     }
 
     @Override
