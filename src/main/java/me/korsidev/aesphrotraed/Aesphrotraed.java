@@ -65,6 +65,7 @@ public final class Aesphrotraed extends JavaPlugin {
         getCommand("friends").setExecutor(new FriendsCommand(this, friendManager));
         getCommand("economy").setExecutor(new EconomyCommand(this));
         getCommand("pay").setExecutor(new PayCommand(this));
+        getCommand("balance").setExecutor(new BalanceCommand(this));
 
         getLogger().info("Plugin has been enabled.");
 

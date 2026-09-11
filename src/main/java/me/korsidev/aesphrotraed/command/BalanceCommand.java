@@ -29,7 +29,6 @@ public class BalanceCommand implements CommandExecutor {
 
         player.sendMessage("§6Your balance: §aA$" + economyManager.formatBalanceFull(balance));
 
-
         return true;
     }
 }
