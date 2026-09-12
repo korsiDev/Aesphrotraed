@@ -3,7 +3,7 @@ package me.korsidev.aesphrotraed;
 import me.korsidev.aesphrotraed.command.*;
 import me.korsidev.aesphrotraed.data.EconomyManager;
 import me.korsidev.aesphrotraed.data.PlayerDataManager;
-import me.korsidev.aesphrotraed.data.ProgressionManager;
+import me.korsidev.aesphrotraed.progression.ProgressionManager;
 import me.korsidev.aesphrotraed.events.ChatEvent;
 import me.korsidev.aesphrotraed.events.ChunkCleanupEvent;
 import me.korsidev.aesphrotraed.events.GeneralEvents;
@@ -46,7 +46,7 @@ public final class Aesphrotraed extends JavaPlugin {
         this.scoreboardManager = new ScoreboardManager(this);
         this.scoreboardManager.startUpdateTask();
 
-        this.progressionManager = new ProgressionManager();
+        this.progressionManager = new ProgressionManager(this);
 
         this.friendManager = new FriendManager();
         this.luckPerms = LuckPermsProvider.get();

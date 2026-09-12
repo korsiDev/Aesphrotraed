@@ -1,3 +1,7 @@
+progression:
+  base-xp: 1500
+  multiplier: 1.08
+
 titles:
   newbie:
     display: §aNewbie

@@ -1,11 +1,25 @@
-package me.korsidev.aesphrotraed.data;
+package me.korsidev.aesphrotraed.progression;
 
+import me.korsidev.aesphrotraed.Aesphrotraed;
+import me.korsidev.aesphrotraed.data.PlayerMemory;
 import me.korsidev.aesphrotraed.util.PlayerUtility;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.entity.Player;
 
 public class ProgressionManager {
+
+    private final Aesphrotraed plugin;
+    double BASE_XP;
+    double MULTIPLIER;
+
+    public ProgressionManager(Aesphrotraed plugin) {
+        this.plugin = plugin;
+        BASE_XP = plugin.getConfig().getDouble("progression.base-xp", 1500);
+        MULTIPLIER = plugin.getConfig().getDouble("progression.multiplier", 1.08);
+    }
+
+
 
     public int getLevel(PlayerMemory memory) {
 
@@ -25,7 +39,7 @@ public class ProgressionManager {
         }
 
         return Math.round(
-                1500 * Math.pow(1.08, level - 1)
+                BASE_XP * Math.pow(MULTIPLIER, level - 1)
         );
     }
 
