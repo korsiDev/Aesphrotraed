@@ -22,8 +22,18 @@ public class PlayerMemory {
     private List<String> ownedTitles = new ArrayList<>();
     private String equippedTitle;
 
+    private long experience;
+
 
     // Getters and Setters
+
+    public long getExperience() {
+        return experience;
+    }
+
+    public void setExperience(long experience) {
+        this.experience = Math.max(0, experience);
+    }
 
     public long getBalance() {
         return balance;

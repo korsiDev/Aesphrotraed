@@ -88,18 +88,18 @@ public class EconomyManager {
         }
 
         if (amount < 1_000_000) {
-            return formatCompact(amount, 1_000, "k");
+            return formatCompact(amount, 1_000, "K");
         }
 
         if (amount < 1_000_000_000) {
-            return formatCompact(amount, 1_000_000, "m");
+            return formatCompact(amount, 1_000_000, "M");
         }
 
-        return formatCompact(amount, 1_000_000_000, "b");
+        return formatCompact(amount, 1_000_000_000, "B");
     }
 
     public String formatBalanceFull(long amount) {
-        return String.format(Locale.US, "%,d", amount);
+        return String.format(Locale.GERMANY, "%,d", amount);
     }
 
     public Long parseAmount(String input) {

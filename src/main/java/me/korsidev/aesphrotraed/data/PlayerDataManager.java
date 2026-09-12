@@ -21,6 +21,7 @@ public class PlayerDataManager {
 
     private void createDefaultData(PlayerMemory memory) {
         memory.setBalance(100);
+        memory.setExperience(0);
 
         memory.setCurrentStreak(0);
         memory.setLongestStreak(0);
@@ -67,6 +68,7 @@ public class PlayerDataManager {
 
     private void loadData(PlayerMemory memory, FileConfiguration config) {
         memory.setBalance(config.getLong("stats.balance", 100));
+        memory.setExperience(config.getLong("stats.experience", 0));
 
         memory.setCurrentStreak(
                 config.getInt("stats.currentStreak", 0)
@@ -130,6 +132,8 @@ public class PlayerDataManager {
                 YamlConfiguration.loadConfiguration(file);
 
         config.set("stats.balance", memory.getBalance());
+        config.set("stats.experience", memory.getExperience());
+
         config.set("stats.currentStreak", memory.getCurrentStreak());
         config.set("stats.longestStreak", memory.getLongestStreak());
         config.set("stats.totalGamesPlayed", memory.getTotalGamesPlayed());

@@ -7,6 +7,8 @@ import me.korsidev.aesphrotraed.scoreboard.ScoreboardManager;
 import me.korsidev.aesphrotraed.util.NametagUtility;
 import me.korsidev.aesphrotraed.util.PlayerUtility;
 import net.kyori.adventure.text.Component;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,6 +24,7 @@ public class GeneralEvents implements Listener {
     private final NametagUtility nametagUtility;
     private final PlayerDataManager playerDataManager;
     private final ScoreboardManager scoreboardManager;
+    private final LuckPerms luckPerms;
 
     public GeneralEvents(
             Aesphrotraed plugin,
@@ -31,6 +34,7 @@ public class GeneralEvents implements Listener {
         this.nametagUtility = plugin.getNametagUtility();
         this.playerDataManager = playerDataManager;
         this.scoreboardManager = plugin.getScoreboardManager();
+        this.luckPerms = plugin.getLuckPerms();
     }
 
     @EventHandler
@@ -38,7 +42,15 @@ public class GeneralEvents implements Listener {
         Player player = event.getPlayer();
         PlayerMemory memory = playerDataManager.loadPlayer(player);
 
-        event.setJoinMessage("§a+ §8› §e" + player.getName());
+        User user = plugin.getLuckPerms().getUserManager().getUser(player.getUniqueId());
+        String lpPrefix = "§e";
+        if (user != null && user.getCachedData().getMetaData().getPrefix() != null) {
+            lpPrefix = user.getCachedData().getMetaData().getPrefix();
+        }
+
+        String styledNameString = lpPrefix + player.getName();
+
+        event.setJoinMessage("§a§l+ §r§8› §r" + styledNameString);
 
         if (memory == null) {
             player.kick(
@@ -61,6 +73,16 @@ public class GeneralEvents implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+
+        User user = plugin.getLuckPerms().getUserManager().getUser(player.getUniqueId());
+        String lpPrefix = "§e";
+        if (user != null && user.getCachedData().getMetaData().getPrefix() != null) {
+            lpPrefix = user.getCachedData().getMetaData().getPrefix();
+        }
+
+        String styledNameString = lpPrefix + player.getName();
+
+        event.setQuitMessage("§c§l- §r§8› §r" + styledNameString);
 
         nametagUtility.removeNametag(player);
         playerDataManager.savePlayer(player);
