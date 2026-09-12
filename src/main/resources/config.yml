@@ -4,16 +4,19 @@ progression:
 
 titles:
   newbie:
-    display: §aNewbie
+    display: Newbie
+    color: a
+    bold: false
+    italic: false
+
   degenerate:
-    display: §cDegenerate
-  lucky:
-    display: §aLucky!
-  unlucky:
-    display: §cUnlucky..
-  highroller:
-    display: §dHigh Roller
-  millionaire:
-    display: §6Millionaire
-  betatester:
-    display: §d§lBeta Tester
+    display: Degenerate
+    color: c
+    bold: false
+    italic: false
+
+  beta:
+    display: Beta
+    color: d
+    bold: true
+    italic: false
