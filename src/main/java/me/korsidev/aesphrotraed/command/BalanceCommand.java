@@ -21,13 +21,13 @@ public class BalanceCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage("§cOnly players can use this command.");
+            commandSender.sendMessage("§8› §cThis command can only be used by players.");
             return true;
         }
 
         long balance = economyManager.getBalance(player);
 
-        player.sendMessage("§6Your balance: §aA$" + economyManager.formatBalanceFull(balance));
+        player.sendMessage("§8› §e◆ " + economyManager.formatBalanceFull(balance));
 
         return true;
     }

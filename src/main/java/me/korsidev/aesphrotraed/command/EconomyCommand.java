@@ -29,12 +29,12 @@ public class EconomyCommand implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
         if(!(commandSender instanceof Player player)) {
-            commandSender.sendMessage("§cThis command can only be used by players.");
+            commandSender.sendMessage("§c! §8› §cThis command can only be used by players.");
             return true;
         }
 
         if(strings.length == 0) {
-            commandSender.sendMessage("§cUsage: /economy <balance|add|remove|set> <value>");
+            commandSender.sendMessage("§c! §8› §cUsage: §e/economy <balance|add|remove|set> <value>");
             return true;
         }
 

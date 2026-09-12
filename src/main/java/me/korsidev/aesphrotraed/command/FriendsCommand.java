@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class FriendsCommand implements TabExecutor {
     private final Aesphrotraed plugin;
     private final FriendManager friendManager;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy, HH:mm");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy, HH:mm");
 
     public FriendsCommand(Aesphrotraed plugin, FriendManager friendManager) {
         this.plugin = plugin;
@@ -34,13 +34,13 @@ public class FriendsCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage("§cOnly players can use this command.");
+            commandSender.sendMessage("§c! §8› §cThis command can only be used by players.");
             return true;
         }
 
         var memory = PlayerUtility.getPlayerMemory(player);
         if (memory == null) {
-            player.sendMessage("§cYour data profile has not loaded yet.");
+            player.sendMessage("§c! §8› §cYour data profile has not loaded yet.");
             return true;
         }
 
@@ -49,7 +49,7 @@ public class FriendsCommand implements TabExecutor {
             List<String> friendUuids = memory.getFriends();
 
             if (friendUuids == null || friendUuids.isEmpty()) {
-                player.sendMessage("§cYou have no friends yet. Use §e/friend add <player> §c to request someone.");
+                player.sendMessage("§c! §8› §cYou have no friends yet. Use §e/friend add <player>§c to request someone.");
                 return true;
             }
 
@@ -60,13 +60,13 @@ public class FriendsCommand implements TabExecutor {
 
                 Component friendLine;
                 if (friendOffline.isOnline()) {
-                    friendLine = Component.text("§a● ")
+                    friendLine = Component.text("§8› ")
                             .append(Component.text("§a" + friendOffline.getName() + "\n §7- §aOnline"));
                 } else {
                     long lastSeen = friendOffline.getLastSeen();
                     String dateStr = lastSeen > 0 ? dateFormat.format(new Date(lastSeen)) : "Unknown";
 
-                    friendLine = Component.text("§c● ")
+                    friendLine = Component.text("§8› ")
                             .append(Component.text("§c" + friendOffline.getName() + "\n §7- §cOffline since: " + dateStr));
                 }
 
@@ -85,28 +85,28 @@ public class FriendsCommand implements TabExecutor {
         // Add/Send request
         if (sub.equals("add")) {
             if (strings.length < 2) {
-                player.sendMessage("§cUsage: /friend add <player>");
+                player.sendMessage("§c! §8› §cUsage: §e/friend add <player>");
                 return true;
             }
             Player target = Bukkit.getPlayer(strings[1]);
             if (target == null || !target.isOnline()) {
-                player.sendMessage("§cThat player is currently offline or does not exist.");
+                player.sendMessage("§c! §8› §cThat player is currently offline or does not exist.");
                 return true;
             }
             if (target.equals(player)) {
-                player.sendMessage("§cYou cannot friend yourself.");
+                player.sendMessage("§c! §8› §cYou cannot friend yourself.");
                 return true;
             }
             if (memory.getFriends().contains(target.getUniqueId().toString())) {
-                player.sendMessage("§cYou are already friends with that player.");
+                player.sendMessage("§c! §8› §cYou are already friends with that player.");
                 return true;
             }
 
             friendManager.sendRequest(player.getUniqueId(), target.getUniqueId());
-            player.sendMessage("§aSent a friend request to " + target.getName() + "!");
+            player.sendMessage("§a✓ §8› §aSent a friend request to §e" + target.getName() + "§a!");
 
             // Send clickable promt to target
-            Component incoming = Component.text("§a" + player.getName() + " has sent you a friend request.")
+            Component incoming = Component.text("§a! §8› §e" + player.getName() + "§a has sent you a friend request.")
                     .append(Component.newline()
                             .append(Component.text("§a§l[Accept]")
                                     .clickEvent(ClickEvent.runCommand("/friend accept " + player.getName())))
@@ -122,12 +122,12 @@ public class FriendsCommand implements TabExecutor {
             if (strings.length < 2) return true;
             Player target = Bukkit.getPlayer(strings[1]);
             if (target == null) {
-                player.sendMessage("§cThat player is no longer online.");
+                player.sendMessage("§c! §8› §cThat player is no longer online.");
                 return true;
             }
 
             if (!friendManager.hasPendingRequestFrom(player.getUniqueId(), target.getUniqueId())) {
-                player.sendMessage("§cYou have no pending requests from that player.");
+                player.sendMessage("§c! §8› §cYou have no pending requests from that player.");
                 return true;
             }
 
@@ -137,8 +137,8 @@ public class FriendsCommand implements TabExecutor {
                 memory.getFriends().add(target.getUniqueId().toString());
                 targetMemory.getFriends().add(player.getUniqueId().toString());
 
-                player.sendMessage("§aYou are now friends with " + target.getName() + "!");
-                target.sendMessage("§a" + player.getName() + " accepted your friend request!");
+                player.sendMessage("§a✓ §8› §aYou are now friends with §e" + target.getName() + "§a!");
+                target.sendMessage("§a✓ §8› §e" + player.getName() + "§a accepted your friend request!");
             }
             friendManager.removeRequest(player.getUniqueId());
             return true;
@@ -147,19 +147,15 @@ public class FriendsCommand implements TabExecutor {
         // Deny
         if (sub.equals("deny")) {
             if (strings.length < 2) return true;
-            var target = Bukkit.getPlayer(friendManager.getIncomingRequest(player.getUniqueId()));
             friendManager.removeRequest(player.getUniqueId());
-            if (target != null) {
-                target.sendMessage("§c" + player.getName() + "has denied your friend request.");
-            }
-            player.sendMessage("§cDenied friend request.");
+            player.sendMessage("§c! §8› §cDenied friend request.");
             return true;
         }
 
         // Remove
         if (sub.equals("remove")) {
             if (strings.length < 2) {
-                player.sendMessage("§cUsage: /friend remove <name>");
+                player.sendMessage("§c! §8› §cUsage: §e/friend remove <name>");
                 return true;
             }
 
@@ -168,7 +164,7 @@ public class FriendsCommand implements TabExecutor {
             String targetUuidStr = targetOffline.getUniqueId().toString();
 
             if (!memory.getFriends().contains(targetUuidStr)) {
-                player.sendMessage("§cThat player is not on your friend list.");
+                player.sendMessage("§c! §8› §cThat player is not on your friend list.");
                 return true;
             }
 
@@ -177,8 +173,7 @@ public class FriendsCommand implements TabExecutor {
                 if (targetMemory != null) {
                     targetMemory.getFriends().remove(player.getUniqueId().toString());
                     memory.getFriends().remove(targetOffline.getUniqueId().toString());
-                    player.sendMessage("§cYou have removed " + targetOffline.getName() + " from your friends list.");
-                    targetOffline.getPlayer().sendMessage("§c" + player.getName() + " removed you from their friends list.");
+                    player.sendMessage("§a✓ §8› §cYou have removed " + targetOffline.getName() + " from your friends list.");
                 }
             } else {
                 java.io.File file = new java.io.File(plugin.getDataFolder() + "/players/" + targetUuidStr + "/general.yml");
@@ -191,7 +186,7 @@ public class FriendsCommand implements TabExecutor {
                     if (offlineFriends.contains(player.getUniqueId().toString())) {
                         offlineFriends.remove(player.getUniqueId().toString());
                         memory.getFriends().remove(targetOffline.getUniqueId().toString());
-                        player.sendMessage("§aYou have removed " + targetOffline.getName() + " from your friends list.");
+                        player.sendMessage("§a✓ §8› §cYou have removed " + targetOffline.getName() + " from your friends list.");
 
                         offlineConfig.set("other.friends", offlineFriends);
                         try {

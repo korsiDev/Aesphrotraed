@@ -6,9 +6,9 @@ import me.korsidev.aesphrotraed.data.PlayerDataManager;
 import me.korsidev.aesphrotraed.events.ChatEvent;
 import me.korsidev.aesphrotraed.events.ChunkCleanupEvent;
 import me.korsidev.aesphrotraed.events.GeneralEvents;
+import me.korsidev.aesphrotraed.scoreboard.ScoreboardManager;
 import me.korsidev.aesphrotraed.util.FriendManager;
 import me.korsidev.aesphrotraed.util.NametagUtility;
-import me.korsidev.aesphrotraed.util.ScoreboardManager;
 import me.korsidev.aesphrotraed.util.TitleRegistry;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -25,9 +25,9 @@ public final class Aesphrotraed extends JavaPlugin {
     private GeneralEvents generalEvents;
     private PlayerDataManager playerDataManager;
     private EconomyManager economyManager;
+    private ScoreboardManager scoreboardManager;
     private FriendManager friendManager;
     private LuckPerms luckPerms;
-    private ScoreboardManager scoreboardManager;
 
     @Override
     public void onEnable() {

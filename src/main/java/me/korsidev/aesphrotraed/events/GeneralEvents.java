@@ -3,9 +3,9 @@ package me.korsidev.aesphrotraed.events;
 import me.korsidev.aesphrotraed.Aesphrotraed;
 import me.korsidev.aesphrotraed.data.PlayerDataManager;
 import me.korsidev.aesphrotraed.data.PlayerMemory;
+import me.korsidev.aesphrotraed.scoreboard.ScoreboardManager;
 import me.korsidev.aesphrotraed.util.NametagUtility;
 import me.korsidev.aesphrotraed.util.PlayerUtility;
-import me.korsidev.aesphrotraed.util.ScoreboardManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,8 +15,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.*;
 
 public class GeneralEvents implements Listener {
 
@@ -40,23 +38,22 @@ public class GeneralEvents implements Listener {
         Player player = event.getPlayer();
         PlayerMemory memory = playerDataManager.loadPlayer(player);
 
+        event.setJoinMessage("§a+ §8› §e" + player.getName());
+
         if (memory == null) {
             player.kick(
-                    Component.text("Your player data could not be loaded.")
+                    Component.text("§c! §8› §cYour player data could not be loaded.")
             );
             return;
         }
 
         PlayerUtility.setPlayerMemory(player, memory);
 
+        scoreboardManager.createScoreboard(player);
+
         Bukkit.getScheduler().runTaskLater(
                 plugin,
                 () -> nametagUtility.createNametag(player),
-                2L
-        );
-        Bukkit.getScheduler().runTaskLater(
-                plugin,
-                () -> scoreboardManager.createScoreboard(player),
                 2L
         );
     }
