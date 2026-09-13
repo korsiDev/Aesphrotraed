@@ -99,7 +99,7 @@ public class EconomyManager {
     }
 
     public String formatBalanceFull(long amount) {
-        return String.format(Locale.GERMANY, "%,d", amount);
+        return String.format(Locale.US, "%,d", amount);
     }
 
     public Long parseAmount(String input) {

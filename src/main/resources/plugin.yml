@@ -16,12 +16,18 @@ commands:
     description: ''
   serverTitles:
     permission: aesphrotraed.serverTitles
-  friends:
-    aliases: [friend, f]
   economy:
     permission: aesphrotraed.economy
+
+  friends:
+    aliases: [ friend, f ]
+
   pay:
     description: Give away some money
+
   purse:
     aliases: [balance, bal, b]
     description: Look at your purse
+
+  admin:
+    permission: aesphrotraed.admin

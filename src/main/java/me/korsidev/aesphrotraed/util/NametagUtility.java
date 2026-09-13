@@ -58,9 +58,12 @@ public class NametagUtility {
         User user = plugin.getLuckPerms().getUserManager().getUser(player.getUniqueId());
         String lpPrefix = (user != null && user.getCachedData().getMetaData().getPrefix() != null) ? user.getCachedData().getMetaData().getPrefix() : "";
 
+        int level = plugin.getProgressionManager().getLevel(memory);
+        String formattedLevel = plugin.getProgressionManager().formatLevel(level);
+
         Component line1 = LegacyComponentSerializer.legacyAmpersand().deserialize(title);
-        Component line2 = LegacyComponentSerializer.legacyAmpersand().deserialize(lpPrefix + player.getName());
-        Component line3 = LegacyComponentSerializer.legacyAmpersand().deserialize("&r&e◆ " + plugin.getEconomyManager().formatBalanceCompact(balance));
+        Component line2 = LegacyComponentSerializer.legacyAmpersand().deserialize("§8[" + formattedLevel + "§8] §r" + lpPrefix + player.getName());
+        Component line3 = LegacyComponentSerializer.legacyAmpersand().deserialize("§r§e◆ " + plugin.getEconomyManager().formatBalanceCompact(balance));
 
         return line1.append(Component.newline())
                 .append(line2).append(Component.newline())

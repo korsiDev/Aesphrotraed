@@ -64,6 +64,12 @@ public class ScoreboardManager {
             return;
         }
 
+        int level = plugin.getProgressionManager().getLevel(memory);
+        String formattedLevel = plugin.getProgressionManager().formatLevel(level);
+        long currentXp = plugin.getProgressionManager().getExperienceInCurrentLevel(memory);
+        long requiredXp = plugin.getProgressionManager().getExperienceRequiredForCurrentLevel(memory);
+
+
         int score = 10;
 
         addLine(objective, " ", score--);
@@ -91,13 +97,16 @@ public class ScoreboardManager {
 
         addLine(
                 objective,
-                "§8› §fLevel §51",
+                "§8› §fLevel " + formattedLevel,
                 score--
         );
 
         addLine(
                 objective,
-                "§5◇ §d100 §8/ §d1.5K",
+                "§5◇ §d"
+                        + plugin.getProgressionManager().formatExperience(currentXp)
+                        + " §8/ §d"
+                        + plugin.getProgressionManager().formatExperience(requiredXp),
                 score--
         );
 

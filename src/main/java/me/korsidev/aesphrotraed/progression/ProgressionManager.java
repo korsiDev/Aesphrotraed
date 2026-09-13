@@ -7,6 +7,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
+
 public class ProgressionManager {
 
     private final Aesphrotraed plugin;
@@ -18,7 +20,6 @@ public class ProgressionManager {
         BASE_XP = plugin.getConfig().getDouble("progression.base-xp", 1500);
         MULTIPLIER = plugin.getConfig().getDouble("progression.multiplier", 1.08);
     }
-
 
 
     public int getLevel(PlayerMemory memory) {
@@ -120,11 +121,23 @@ public class ProgressionManager {
         }
     }
 
-    private void handleLevelUp(
-            Player player,
-            int oldLevel,
-            int newLevel
-    ) {
+    public void removeExperience(Player player, long amount) {
+        if (amount <= 0) {
+            return;
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(player);
+
+        if(memory == null) {
+            return;
+        }
+
+        memory.setExperience(
+                Math.max(0, memory.getExperience() - amount)
+        );
+    }
+
+    private void handleLevelUp(Player player, int oldLevel, int newLevel) {
 
         for (int level = oldLevel + 1; level <= newLevel; level++) {
 
@@ -132,6 +145,48 @@ public class ProgressionManager {
                     "§d✦ §fYou reached level §5" + level + "§f!"
             );
             player.playSound(Sound.sound(Key.key("block.amethyst_cluster.hit"), Sound.Source.MASTER, 0.8f, 1.2f));
+            plugin.getNametagUtility().updateNametag(player);
         }
+
+    }
+
+    public String formatExperience(long experience) {
+        if (experience < 1_000) {
+            return String.valueOf(experience);
+        }
+
+        if (experience < 1_000_000) {
+            double value = experience / 1_000.0;
+
+            if (value % 1 == 0) {
+                return String.format(Locale.US, "%.0fK", value);
+            }
+
+            return String.format(Locale.US, "%.1fK", value);
+        }
+
+        double value = experience / 1_000_000.0;
+
+        if (value % 1 == 0) {
+            return String.format(Locale.US, "%.0fM", value);
+        }
+
+        return String.format(Locale.US, "%.2fM", value);
+    }
+
+    public String formatLevel(int level) {
+        if (level < 5) {
+            return "§f" + level;
+        }
+        if (level < 25) {
+            return "§6" + level;
+        }
+        if (level < 50) {
+            return "§5" + level;
+        }
+        if (level < 75) {
+            return "§d" + level;
+        }
+        return "§b" + level;
     }
 }

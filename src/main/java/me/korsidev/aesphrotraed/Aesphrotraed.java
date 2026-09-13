@@ -16,9 +16,6 @@ import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-// TODO: STOP SPAMMING WHEN SETTITLE OR DELETE FRIEND OR ACCEPT FRIEND...
-// TODO: SCOREBOARD UND ECONOMY FERTIG MACHEN
-
 
 public final class Aesphrotraed extends JavaPlugin {
     private NametagUtility nametagUtility;
@@ -70,6 +67,7 @@ public final class Aesphrotraed extends JavaPlugin {
         getCommand("economy").setExecutor(new EconomyCommand(this));
         getCommand("pay").setExecutor(new PayCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
+        getCommand("admin").setExecutor(new AdminCommand(this));
 
         getLogger().info("Plugin has been enabled.");
 
