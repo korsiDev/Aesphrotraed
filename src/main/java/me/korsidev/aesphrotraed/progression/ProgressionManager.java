@@ -137,12 +137,54 @@ public class ProgressionManager {
         );
     }
 
+    public void addLevels(Player player, int amount) {
+
+        if (amount <= 0) {
+            return;
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(player);
+
+        if (memory == null) {
+            return;
+        }
+
+        int currentLevel = getLevel(memory);
+        int newLevel = currentLevel + amount;
+
+        long experience = getTotalExperienceForLevel(newLevel);
+
+        setExperience(player, experience);
+        plugin.getNametagUtility().updateNametag(player);
+    }
+
+    public void removeLevels(Player player, int amount) {
+
+        if (amount <= 0) {
+            return;
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(player);
+
+        if (memory == null) {
+            return;
+        }
+
+        int currentLevel = getLevel(memory);
+        int newLevel = Math.max(1, currentLevel - amount);
+
+        long experience = getTotalExperienceForLevel(newLevel);
+
+        setExperience(player, experience);
+        plugin.getNametagUtility().updateNametag(player);
+    }
+
     private void handleLevelUp(Player player, int oldLevel, int newLevel) {
 
         for (int level = oldLevel + 1; level <= newLevel; level++) {
 
             player.sendMessage(
-                    "§d✦ §fYou reached level §5" + level + "§f!"
+                    "§d✦ §fYou reached level " + plugin.getProgressionManager().formatLevel(level) + "§f!"
             );
             player.playSound(Sound.sound(Key.key("block.amethyst_cluster.hit"), Sound.Source.MASTER, 0.8f, 1.2f));
             plugin.getNametagUtility().updateNametag(player);
@@ -172,6 +214,36 @@ public class ProgressionManager {
         }
 
         return String.format(Locale.US, "%.2fM", value);
+    }
+
+    public Long parseExperience(String input) {
+
+        try {
+
+            String value = input.toLowerCase();
+
+            double multiplier = 1;
+
+            if (value.endsWith("k")) {
+                multiplier = 1_000;
+                value = value.substring(0, value.length() - 1);
+
+            } else if (value.endsWith("m")) {
+                multiplier = 1_000_000;
+                value = value.substring(0, value.length() - 1);
+            }
+
+            double number = Double.parseDouble(value);
+
+            if (number < 0) {
+                throw new NumberFormatException();
+            }
+
+            return Math.round(number * multiplier);
+
+        } catch (NumberFormatException exception) {
+            return null;
+        }
     }
 
     public String formatLevel(int level) {

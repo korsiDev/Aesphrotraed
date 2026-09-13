@@ -177,11 +177,282 @@ public class AdminCommand implements TabExecutor {
 
     private void handleExperience(CommandSender sender, String[] args) {
 
+        if (!hasEnoughArguments(sender, args, 3)) {
+            return;
+        }
 
+        String action = args[1].toLowerCase();
+
+        Player target = Bukkit.getPlayerExact(args[2]);
+
+        if (target == null) {
+            return;
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(target);
+
+        if (memory == null) {
+            sender.sendMessage(
+                    "§c! §8› §cCould not load player data."
+            );
+            return;
+        }
+
+        switch (action) {
+
+            case "get" -> {
+                int level = plugin.getProgressionManager().getLevel(memory);
+
+                sender.sendMessage(
+                        "§a! §8› §e"
+                                + target.getName()
+                                + "'s §aXP: §5◇ "
+                                + plugin.getProgressionManager()
+                                .formatExperience(memory.getExperience())
+                                + " §8(§fLevel "
+                                + plugin.getProgressionManager()
+                                .formatLevel(level)
+                                + "§8)"
+                );
+            }
+
+            case "set" -> {
+
+                if (!hasEnoughArguments(sender, args, 4)) {
+                    return;
+                }
+
+                Long amount = plugin.getProgressionManager().parseExperience(args[3]);
+
+                if (amount == null) {
+                    sender.sendMessage(
+                            "§c! §8› §cInvalid XP amount: §e" + args[3]
+                    );
+                    return;
+                }
+
+                plugin.getProgressionManager()
+                        .setExperience(target, amount);
+
+                sender.sendMessage(
+                        "§a✓ §8› §aSet §e"
+                                + target.getName()
+                                + "'s §aXP to §d"
+                                + plugin.getProgressionManager()
+                                .formatExperience(amount)
+                                + "§a."
+                );
+            }
+
+            case "add" -> {
+
+                if (!hasEnoughArguments(sender, args, 4)) {
+                    return;
+                }
+
+                Long amount = plugin.getProgressionManager().parseExperience(args[3]);
+
+                if (amount == null) {
+                    sender.sendMessage(
+                            "§c! §8› §cInvalid XP amount: §e" + args[3]
+                    );
+                    return;
+                }
+
+                plugin.getProgressionManager()
+                        .addExperience(target, amount);
+
+                sender.sendMessage(
+                        "§a✓ §8› §aAdded §d◇ "
+                                + plugin.getProgressionManager()
+                                .formatExperience(amount)
+                                + " §aXP to §e"
+                                + target.getName()
+                                + "§a."
+                );
+            }
+
+            case "remove" -> {
+
+                if (!hasEnoughArguments(sender, args, 4)) {
+                    return;
+                }
+
+                Long amount = plugin.getProgressionManager().parseExperience(args[3]);
+
+                if (amount == null) {
+                    sender.sendMessage(
+                            "§c! §8› §cInvalid XP amount: §e" + args[3]
+                    );
+                    return;
+                }
+
+                plugin.getProgressionManager()
+                        .removeExperience(target, amount);
+
+                sender.sendMessage(
+                        "§a✓ §8› §aRemoved §d◇ "
+                                + plugin.getProgressionManager()
+                                .formatExperience(amount)
+                                + " §aXP from §e"
+                                + target.getName()
+                                + "§a."
+                );
+            }
+
+            default -> sender.sendMessage(
+                    "§c! §8› §cUnknown XP action. Use §eget, set, add §cor §eremove§c."
+            );
+
+        }
 
     }
 
     private void handleLevel(CommandSender sender, String[] args) {
+
+        if (!hasEnoughArguments(sender, args, 3)) {
+            return;
+        }
+
+        String action = args[1].toLowerCase();
+
+        Player target = Bukkit.getPlayerExact(args[2]);
+
+        if (target == null) {
+            return;
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(target);
+
+        if (memory == null) {
+            sender.sendMessage(
+                    "§c! §8› §cCould not load player data."
+            );
+            return;
+        }
+
+        switch (action) {
+
+            case "get" -> {
+
+                int level =
+                        plugin.getProgressionManager()
+                                .getLevel(memory);
+
+                sender.sendMessage(
+                        "§a! §8› §e"
+                                + target.getName()
+                                + "'s §alevel: "
+                                + plugin.getProgressionManager().formatLevel(level)
+                );
+            }
+
+            case "set" -> {
+
+                if (!hasEnoughArguments(sender, args, 4)) {
+                    return;
+                }
+
+                int level;
+
+                try {
+                    level = Integer.parseInt(args[3]);
+                } catch (NumberFormatException exception) {
+                    sender.sendMessage(
+                            "§c! §8› §cInvalid level."
+                    );
+                    return;
+                }
+
+                if (level < 1) {
+                    sender.sendMessage(
+                            "§c! §8› §cLevel must be at least 1."
+                    );
+                    return;
+                }
+
+                long experience =
+                        plugin.getProgressionManager()
+                                .getTotalExperienceForLevel(level);
+
+                plugin.getProgressionManager()
+                        .setExperience(target, experience);
+
+                sender.sendMessage(
+                        "§a✓ §8› §aSet §e"
+                                + target.getName()
+                                + "'s §alevel to "
+                                + plugin.getProgressionManager().formatLevel(level)
+                                + "§a."
+                );
+                plugin.getNametagUtility().updateNametag(target);
+            }
+
+            case "add" -> {
+
+                if (!hasEnoughArguments(sender, args, 4)) {
+                    return;
+                }
+
+                int amount;
+
+                try {
+                    amount = Integer.parseInt(args[3]);
+                } catch (NumberFormatException exception) {
+                    sender.sendMessage("§c! §8› §cInvalid level amount.");
+                    return;
+                }
+
+                if (amount <= 0) {
+                    sender.sendMessage("§c! §8› §cAmount must be greater than 0.");
+                    return;
+                }
+
+                plugin.getProgressionManager()
+                        .addLevels(target, amount);
+
+                sender.sendMessage(
+                        "§a✓ §8› §aAdded §5"
+                                + amount
+                                + " §alevels to §e"
+                                + target.getName()
+                                + "§a."
+                );
+            }
+
+            case "remove" -> {
+
+                if (!hasEnoughArguments(sender, args, 4)) {
+                    return;
+                }
+
+                int amount;
+
+                try {
+                    amount = Integer.parseInt(args[3]);
+                } catch (NumberFormatException exception) {
+                    sender.sendMessage("§c! §8› §cInvalid level amount.");
+                    return;
+                }
+
+                if (amount <= 0) {
+                    sender.sendMessage("§c! §8› §cAmount must be greater than 0.");
+                    return;
+                }
+
+                plugin.getProgressionManager()
+                        .removeLevels(target, amount);
+
+                sender.sendMessage(
+                        "§a✓ §8› §aRemoved §5"
+                                + amount
+                                + " §alevels from §e"
+                                + target.getName()
+                                + "§a."
+                );
+            }
+
+        }
 
     }
 
