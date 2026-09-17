@@ -3,6 +3,7 @@ package me.korsidev.aesphrotraed;
 import me.korsidev.aesphrotraed.command.*;
 import me.korsidev.aesphrotraed.data.EconomyManager;
 import me.korsidev.aesphrotraed.data.PlayerDataManager;
+import me.korsidev.aesphrotraed.events.LuckPermsListener;
 import me.korsidev.aesphrotraed.progression.ProgressionManager;
 import me.korsidev.aesphrotraed.events.ChatEvent;
 import me.korsidev.aesphrotraed.events.ChunkCleanupEvent;
@@ -47,6 +48,8 @@ public final class Aesphrotraed extends JavaPlugin {
 
         this.friendManager = new FriendManager();
         this.luckPerms = LuckPermsProvider.get();
+
+        new LuckPermsListener(this);
 
         this.generalEvents = new GeneralEvents(
                 this,
