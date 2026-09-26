@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Locale;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
@@ -548,7 +547,71 @@ public class AdminCommand implements TabExecutor {
             );
         }
 
+        if (args.length == 3) {
+            String action = args[1].toLowerCase(Locale.ROOT);
+
+            switch (action) {
+                case "delete":
+                case "edit":
+                    return plugin.getTitleRegistry()
+                            .getAllTitleIds()
+                            .stream()
+                            .filter(id -> id.toLowerCase(Locale.ROOT)
+                                    .startsWith(args[2].toLowerCase(Locale.ROOT)))
+                            .sorted()
+                            .toList();
+
+                case "give":
+                case "take":
+                    return completePlayers(args[2]);
+
+                default:
+                    return Collections.emptyList();
+            }
+        }
+
+        if (args.length == 4) {
+            String action = args[1].toLowerCase(Locale.ROOT);
+
+            if (action.equals("give")) {
+                return plugin.getTitleRegistry()
+                        .getAllTitleIds()
+                        .stream()
+                        .filter(id -> id.toLowerCase(Locale.ROOT)
+                                .startsWith(args[3].toLowerCase(Locale.ROOT)))
+                        .sorted()
+                        .toList();
+            }
+
+            if (action.equals("take")) {
+                return completeOwnedTitles(args[2], args[3]);
+            }
+        }
+
         return Collections.emptyList();
+    }
+    private List<String> completeOwnedTitles(String playerName, String input) {
+
+        Player player = Bukkit.getPlayerExact(playerName);
+
+        if (player == null) {
+            return Collections.emptyList();
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(player);
+
+        if (memory == null) {
+            return Collections.emptyList();
+        }
+
+        String lowerInput = input.toLowerCase(Locale.ROOT);
+
+        return memory.getOwnedTitles()
+                .stream()
+                .filter(titleId -> titleId.toLowerCase(Locale.ROOT)
+                        .startsWith(lowerInput))
+                .sorted()
+                .toList();
     }
 
     private List<String> completePlayers(String input) {

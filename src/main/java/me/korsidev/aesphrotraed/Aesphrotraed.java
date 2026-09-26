@@ -104,6 +104,10 @@ public final class Aesphrotraed extends JavaPlugin {
         return progressionManager;
     }
 
+    public TitleRegistry getTitleRegistry() {
+        return titleRegistry;
+    }
+
     @Override
     public void onDisable() {
 

@@ -5,18 +5,18 @@ progression:
 titles:
   newbie:
     display: Newbie
-    color: a
+    format: lime
     bold: false
     italic: false
 
   degenerate:
     display: Degenerate
-    color: c
+    format: red
     bold: false
     italic: false
 
   beta:
     display: Beta
-    color: d
+    format: pink
     bold: true
     italic: false
