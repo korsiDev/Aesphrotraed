@@ -2,18 +2,21 @@ package me.korsidev.aesphrotraed.command;
 
 import me.korsidev.aesphrotraed.Aesphrotraed;
 import me.korsidev.aesphrotraed.data.PlayerMemory;
-import me.korsidev.aesphrotraed.progression.ProgressionManager;
 import me.korsidev.aesphrotraed.util.PlayerUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Locale;
+import org.bukkit.entity.Player;
+
+import java.util.Collections;
 import java.util.List;
 
 public class AdminCommand implements TabExecutor {
@@ -481,6 +484,99 @@ public class AdminCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        return List.of();
+        if (!commandSender.hasPermission("aesphrotraed.admin")) {
+            return Collections.emptyList();
+        }
+
+        if (strings.length == 1) {
+            return filter(
+                    strings[0],
+                    "bal",
+                    "xp",
+                    "lvl",
+                    "titles"
+            );
+        }
+
+        switch (strings[0].toLowerCase()) {
+
+            case "bal":
+            case "xp":
+            case "lvl":
+
+                return completeStandardAdminCommand(strings);
+
+            case "titles":
+
+                return completeTitleCommand(strings);
+
+            default:
+
+                return Collections.emptyList();
+        }
+    }
+
+    private List<String> completeStandardAdminCommand(String[] args) {
+
+        if (args.length == 2) {
+            return filter(
+                    args[1],
+                    "get",
+                    "set",
+                    "add",
+                    "remove"
+            );
+        }
+
+        if (args.length == 3) {
+            return completePlayers(args[2]);
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<String> completeTitleCommand(String[] args) {
+
+        if (args.length == 2) {
+            return filter(
+                    args[1],
+                    "create",
+                    "edit",
+                    "delete",
+                    "give",
+                    "take"
+            );
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<String> completePlayers(String input) {
+
+        return Bukkit.getOnlinePlayers()
+                .stream()
+                .map(Player::getName)
+                .filter(name ->
+                        name.toLowerCase(Locale.ROOT)
+                                .startsWith(input.toLowerCase(Locale.ROOT))
+                )
+                .sorted()
+                .toList();
+    }
+
+    private List<String> filter(
+            String input,
+            String... options
+    ) {
+
+        String lowerInput =
+                input.toLowerCase(Locale.ROOT);
+
+        return Arrays.stream(options)
+                .filter(option ->
+                        option.toLowerCase(Locale.ROOT)
+                                .startsWith(lowerInput)
+                )
+                .toList();
     }
 }

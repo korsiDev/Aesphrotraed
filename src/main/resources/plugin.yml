@@ -11,6 +11,11 @@ authors: [ korsiDev ]
 
 depend: [LuckPerms]
 
+permissions:
+  aesphrotraed.admin:
+    description: Access to Aesphrotraed administrative commands
+    default: op
+
 commands:
   setTitle:
     description: ''

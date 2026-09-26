@@ -25,13 +25,21 @@ public class ProgressionManager {
     public int getLevel(PlayerMemory memory) {
 
         long experience = memory.getExperience();
-        int level = 1;
 
-        while (experience >= getTotalExperienceForLevel(level + 1)) {
-            level++;
+        if (experience <= 0) {
+            return 1;
         }
 
-        return level;
+        if (MULTIPLIER == 1.0) {
+            return (int) Math.floor(experience / BASE_XP) + 1;
+        }
+
+        double level = 1
+                + Math.log(
+                1 + experience * (MULTIPLIER - 1) / BASE_XP
+        ) / Math.log(MULTIPLIER);
+
+        return Math.max(1, (int) Math.floor(level));
     }
 
     public long getRequiredExperience(int level) {
@@ -50,13 +58,15 @@ public class ProgressionManager {
             return 0;
         }
 
-        long total = 0;
-
-        for (int i = 1; i < level; i++) {
-            total += getRequiredExperience(i);
+        if (MULTIPLIER == 1.0) {
+            return Math.round(BASE_XP * (level - 1));
         }
 
-        return total;
+        return Math.round(
+                BASE_XP
+                        * (Math.pow(MULTIPLIER, level - 1) - 1)
+                        / (MULTIPLIER - 1)
+        );
     }
 
     public long getExperienceInCurrentLevel(PlayerMemory memory) {
@@ -112,7 +122,7 @@ public class ProgressionManager {
 
         int oldLevel = getLevel(memory);
 
-        memory.setExperience(amount);
+        memory.setExperience(Math.max(0, amount));
 
         int newLevel = getLevel(memory);
 
