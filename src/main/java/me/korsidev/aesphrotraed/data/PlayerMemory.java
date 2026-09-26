@@ -25,6 +25,27 @@ public class PlayerMemory {
     private long experience;
 
 
+    public void ensureDefaultTitle() {
+
+        ownedTitles.replaceAll(String::toLowerCase);
+
+        if (!ownedTitles.contains("newbie")) {
+            ownedTitles.add("newbie");
+        }
+
+        if (equippedTitle != null) {
+            equippedTitle = equippedTitle.toLowerCase();
+        }
+
+        if (equippedTitle == null
+                || equippedTitle.isBlank()
+                || !ownedTitles.contains(equippedTitle)) {
+
+            equippedTitle = "newbie";
+        }
+    }
+
+
     // Getters and Setters
 
     public long getExperience() {

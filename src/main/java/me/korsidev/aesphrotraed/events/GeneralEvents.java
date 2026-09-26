@@ -59,6 +59,8 @@ public class GeneralEvents implements Listener {
             return;
         }
 
+        memory.ensureDefaultTitle();
+
         PlayerUtility.setPlayerMemory(player, memory);
 
         scoreboardManager.createScoreboard(player);
