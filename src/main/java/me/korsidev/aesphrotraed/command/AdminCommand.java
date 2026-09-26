@@ -618,9 +618,22 @@ public class AdminCommand implements TabExecutor {
 
         plugin.getTitleRegistry().registerTitle(title);
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PlayerMemory memory = PlayerUtility.getPlayerMemory(player);
+
+            if (memory == null) {
+                continue;
+            }
+
+            if (titleId.equalsIgnoreCase(memory.getEquippedTitle())) {
+                plugin.getNametagUtility().updateNametag(player);
+            }
+        }
+
         sender.sendMessage(
                 "§a✓ §8› §aUpdated title §e" + titleId + "§a."
         );
+
     }
 
 
@@ -765,7 +778,6 @@ public class AdminCommand implements TabExecutor {
 
             if (action.equals("create") || action.equals("edit")) {
                 return filter(args[4],
-                        "<Format>",
                         "black",
                         "dark_blue",
                         "dark_green",
