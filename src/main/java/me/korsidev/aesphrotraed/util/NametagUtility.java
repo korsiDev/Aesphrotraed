@@ -51,7 +51,7 @@ public class NametagUtility {
 
         String title = titleId == null
                 ? ""
-                : registry.getDisplay(titleId);
+                : registry.getTitle(titleId).getDisplay();
 
         long balance = memory.getBalance();
 

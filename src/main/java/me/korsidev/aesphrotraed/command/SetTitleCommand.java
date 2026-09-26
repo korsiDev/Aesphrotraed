@@ -54,7 +54,7 @@ public class SetTitleCommand implements CommandExecutor {
 
             for (String titleId : ownedIds) {
                 // Get global display color
-                String rawDisplay = registry.getDisplay(titleId);
+                String rawDisplay = registry.getTitle(titleId).getDisplay();
                 if (rawDisplay == null || rawDisplay.isEmpty()) {
                     rawDisplay = "§7" + titleId;
                 }
@@ -89,7 +89,7 @@ public class SetTitleCommand implements CommandExecutor {
             return true;
         }
 
-        String newDisplay = registry.getDisplay(selectedId);
+        String newDisplay = registry.getTitle(selectedId).getDisplay();
         memory.setEquippedTitle(selectedId);
 
         playerDataManager.savePlayer(player, memory);
