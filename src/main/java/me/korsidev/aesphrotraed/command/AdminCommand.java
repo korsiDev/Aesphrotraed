@@ -2,6 +2,7 @@ package me.korsidev.aesphrotraed.command;
 
 import me.korsidev.aesphrotraed.Aesphrotraed;
 import me.korsidev.aesphrotraed.data.PlayerMemory;
+import me.korsidev.aesphrotraed.data.TitleData;
 import me.korsidev.aesphrotraed.util.PlayerUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -460,7 +461,171 @@ public class AdminCommand implements TabExecutor {
 
     private void handleTitles(CommandSender sender, String[] args) {
 
+        if (!hasEnoughArguments(sender, args, 2)) {
+            return;
+        }
+
+        String action = args[1].toLowerCase(Locale.ROOT);
+
+        switch (action) {
+            case "create" -> handleTitleCreate(sender, args);
+
+            case "edit" -> handleTitleEdit(sender, args);
+
+            default -> sender.sendMessage(
+                    "§c! §8› §cUnknown title action. Use §ecreate, edit, delete, give §cor §etake§c."
+            );
+        }
+
     }
+
+    // Title Create
+    private void handleTitleCreate(CommandSender sender, String[] args) {
+
+        if (!hasEnoughArguments(sender, args, 7)) {
+            return;
+        }
+
+        String titleId = args[2].toLowerCase(Locale.ROOT);
+        String display = args[3];
+        String format = args[4];
+
+        Boolean bold = parseBoolean(args[5]);
+        Boolean italic = parseBoolean(args[6]);
+
+        if (bold == null || italic == null) {
+            sender.sendMessage(
+                    "§c! §8› §cBold and italic must be §etrue §cor §efalse§c."
+            );
+            return;
+        }
+
+        if (!isValidTitleId(titleId)) {
+            sender.sendMessage(
+                    "§c! §8› §cInvalid title ID. Use only lowercase letters, numbers, §e- §cand §e_§c."
+            );
+            return;
+        }
+
+        if (plugin.getTitleRegistry().titleExists(titleId)) {
+            sender.sendMessage(
+                    "§c! §8› §cA title with the ID §e"
+                            + titleId
+                            + " §calready exists."
+            );
+            return;
+        }
+
+        if (!isValidTitleFormat(format)) {
+            sender.sendMessage(
+                    "§c! §8› §cInvalid title format."
+            );
+            return;
+        }
+
+        TitleData title = new TitleData(
+                titleId,
+                display,
+                format,
+                bold,
+                italic
+        );
+
+        plugin.getTitleRegistry().registerTitle(title);
+
+        sender.sendMessage(
+                "§a✓ §8› §aCreated title §e"
+                        + titleId
+                        + "§a."
+        );
+
+    }
+
+    private Boolean parseBoolean(String input) {
+
+        if (input.equalsIgnoreCase("true")) {
+            return true;
+        }
+
+        if (input.equalsIgnoreCase("false")) {
+            return false;
+        }
+
+        return null;
+    }
+
+    private boolean isValidTitleId(String titleId) {
+
+        return titleId.matches("[a-z0-9_-]+");
+    }
+
+    private boolean isValidTitleFormat(String format) {
+
+        String lower = format.toLowerCase(Locale.ROOT);
+
+        if (lower.matches("[a-z_]+")) {
+            return true;
+        }
+
+        if (lower.matches("#[0-9a-f]{6}")) {
+            return true;
+        }
+
+        return lower.matches(
+                "gradient:#[0-9a-f]{6}:#[0-9a-f]{6}"
+        );
+    }
+
+    // Title Edit
+    private void handleTitleEdit(CommandSender sender, String[] args) {
+        if (!hasEnoughArguments(sender, args, 7)) return;
+
+        String titleId = args[2].toLowerCase(Locale.ROOT);
+        String display = args[3];
+        String format = args[4];
+
+        Boolean bold = parseBoolean(args[5]);
+        Boolean italic = parseBoolean(args[6]);
+
+        if (bold == null || italic == null) {
+            sender.sendMessage(
+                    "§c! §8› §cBold and italic must be §etrue §cor §efalse§c."
+            );
+            return;
+        }
+
+        if (!plugin.getTitleRegistry().titleExists(titleId)) {
+            sender.sendMessage(
+                    "§c! §8› §cNo title with the ID §e" + titleId + " §cexists."
+            );
+            return;
+        }
+
+        if (!isValidTitleFormat(format)) {
+            sender.sendMessage(
+                    "§c! §8› §cInvalid title format."
+            );
+            return;
+        }
+
+        TitleData title = new TitleData(
+                titleId,
+                display,
+                format,
+                bold,
+                italic
+        );
+
+        plugin.getTitleRegistry().registerTitle(title);
+
+        sender.sendMessage(
+                "§a✓ §8› §aUpdated title §e" + titleId + "§a."
+        );
+    }
+
+
+
+
 
     private Player getTargetPlayer(CommandSender sender, String name) {
         Player player = Bukkit.getPlayerExact(name);
@@ -565,6 +730,9 @@ public class AdminCommand implements TabExecutor {
                 case "take":
                     return completePlayers(args[2]);
 
+                case "create":
+                    return filter(args[2], "<TitleId>");
+
                 default:
                     return Collections.emptyList();
             }
@@ -572,6 +740,10 @@ public class AdminCommand implements TabExecutor {
 
         if (args.length == 4) {
             String action = args[1].toLowerCase(Locale.ROOT);
+
+            if (action.equals("create") || action.equals("edit")) {
+                return filter(args[3], "<Display>");
+            }
 
             if (action.equals("give")) {
                 return plugin.getTitleRegistry()
@@ -585,6 +757,59 @@ public class AdminCommand implements TabExecutor {
 
             if (action.equals("take")) {
                 return completeOwnedTitles(args[2], args[3]);
+            }
+        }
+
+        if (args.length == 5) {
+            String action = args[1].toLowerCase(Locale.ROOT);
+
+            if (action.equals("create") || action.equals("edit")) {
+                return filter(args[4],
+                        "<Format>",
+                        "black",
+                        "dark_blue",
+                        "dark_green",
+                        "dark_aqua",
+                        "dark_red",
+                        "dark_purple",
+                        "gold",
+                        "gray",
+                        "dark_gray",
+                        "blue",
+                        "green",
+                        "aqua",
+                        "red",
+                        "light_purple",
+                        "yellow",
+                        "white",
+                        "#FFFFFF",
+                        "gradient:#FFFFFF:#000000");
+            }
+        }
+
+        if (args.length == 6) {
+            String action = args[1].toLowerCase(Locale.ROOT);
+
+            if (action.equals("create") || action.equals("edit")) {
+                return filter(
+                        args[5],
+                        "<Bold>",
+                        "true",
+                        "false"
+                );
+            }
+        }
+
+        if (args.length == 7) {
+            String action = args[1].toLowerCase(Locale.ROOT);
+
+            if (action.equals("create") || action.equals("edit")) {
+                return filter(
+                        args[6],
+                        "<Italic>",
+                        "true",
+                        "false"
+                );
             }
         }
 
