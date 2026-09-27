@@ -2,6 +2,7 @@ package me.korsidev.aesphrotraed.util;
 
 import me.korsidev.aesphrotraed.Aesphrotraed;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
@@ -26,6 +27,7 @@ public class NametagUtility {
     private final TitleRegistry registry;
     private final Map<UUID, TextDisplay> activeTags = new HashMap<>();
     private final NamespacedKey nametagKey;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public NametagUtility(Aesphrotraed plugin, TitleRegistry registry) {
         this.plugin = plugin;
@@ -49,23 +51,66 @@ public class NametagUtility {
 
         String titleId = memory.getEquippedTitle();
 
-        String title = titleId == null
-                ? ""
-                : registry.getTitle(titleId).getDisplay();
+        Component title = Component.empty();
+
+        if (titleId != null) {
+            var titleData = registry.getTitle(titleId);
+
+            if (titleData != null) {
+                String format = titleData.getFormat();
+
+                String formattedTitle;
+
+                if (format.startsWith("gradient:")) {
+                    String[] colors = format.split(":");
+
+                    formattedTitle =
+                            "<gradient:" + colors[1] + ":" + colors[2] + ">"
+                            + titleData.getDisplay()
+                            + "</gradient>";
+                } else {
+                    formattedTitle =
+                            "<" + format + ">"
+                                    + titleData.getDisplay()
+                                    + "</" + format + ">";
+                }
+
+                if (titleData.isBold()) {
+                    formattedTitle = "<bold>" + formattedTitle + "</bold>";
+                }
+
+                if (titleData.isItalic()) {
+                    formattedTitle = "<italic>" + formattedTitle + "</italic>";
+                }
+
+                title = miniMessage.deserialize(formattedTitle);
+            }
+        }
 
         long balance = memory.getBalance();
 
-        User user = plugin.getLuckPerms().getUserManager().getUser(player.getUniqueId());
-        String lpPrefix = (user != null && user.getCachedData().getMetaData().getPrefix() != null) ? user.getCachedData().getMetaData().getPrefix() : "";
+        User user = plugin.getLuckPerms()
+                .getUserManager()
+                .getUser(player.getUniqueId());
+
+        String lpPrefix =
+                (user != null
+                        && user.getCachedData().getMetaData().getPrefix() != null)
+                        ? user.getCachedData().getMetaData().getPrefix()
+                        : "";
 
         int level = plugin.getProgressionManager().getLevel(memory);
         String formattedLevel = plugin.getProgressionManager().formatLevel(level);
 
-        Component line1 = LegacyComponentSerializer.legacyAmpersand().deserialize(title);
-        Component line2 = LegacyComponentSerializer.legacyAmpersand().deserialize("§8[" + formattedLevel + "§8] §r" + lpPrefix + player.getName());
-        Component line3 = LegacyComponentSerializer.legacyAmpersand().deserialize("§r§e◆ " + plugin.getEconomyManager().formatBalanceCompact(balance));
+        Component line2 = LegacyComponentSerializer.legacyAmpersand().deserialize(
+                "§8[" + formattedLevel + "§8] §r"
+                        + lpPrefix
+                        + player.getName());
 
-        return line1.append(Component.newline())
+        Component line3 = LegacyComponentSerializer.legacyAmpersand().deserialize(
+                "§r§e◆ " + plugin.getEconomyManager().formatBalanceCompact(balance));
+
+        return title.append(Component.newline())
                 .append(line2).append(Component.newline())
                 .append(line3);
     }

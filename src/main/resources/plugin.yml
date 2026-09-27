@@ -19,10 +19,6 @@ permissions:
 commands:
   setTitle:
     description: ''
-  serverTitles:
-    permission: aesphrotraed.serverTitles
-  economy:
-    permission: aesphrotraed.economy
 
   friends:
     aliases: [ friend, f ]

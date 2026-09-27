@@ -64,6 +64,7 @@ public class AdminCommand implements TabExecutor {
 
     }
 
+    // Handling Events
     private void handleBalance(CommandSender sender, String[] args) {
         if (!hasEnoughArguments(sender, args, 3)) {
             return;
@@ -177,7 +178,6 @@ public class AdminCommand implements TabExecutor {
             );
         }
     }
-
     private void handleExperience(CommandSender sender, String[] args) {
 
         if (!hasEnoughArguments(sender, args, 3)) {
@@ -310,7 +310,6 @@ public class AdminCommand implements TabExecutor {
         }
 
     }
-
     private void handleLevel(CommandSender sender, String[] args) {
 
         if (!hasEnoughArguments(sender, args, 3)) {
@@ -458,7 +457,6 @@ public class AdminCommand implements TabExecutor {
         }
 
     }
-
     private void handleTitles(CommandSender sender, String[] args) {
 
         if (!hasEnoughArguments(sender, args, 2)) {
@@ -469,8 +467,10 @@ public class AdminCommand implements TabExecutor {
 
         switch (action) {
             case "create" -> handleTitleCreate(sender, args);
-
             case "edit" -> handleTitleEdit(sender, args);
+            case "delete" -> handleTitleDelete(sender, args);
+            case "give" -> handleTitleGive(sender, args);
+            case "take" -> handleTitleTake(sender, args);
 
             default -> sender.sendMessage(
                     "§c! §8› §cUnknown title action. Use §ecreate, edit, delete, give §cor §etake§c."
@@ -478,6 +478,7 @@ public class AdminCommand implements TabExecutor {
         }
 
     }
+
 
     // Title Create
     private void handleTitleCreate(CommandSender sender, String[] args) {
@@ -636,10 +637,179 @@ public class AdminCommand implements TabExecutor {
 
     }
 
+    // Title Delete
+    private void handleTitleDelete(CommandSender sender, String[] args) {
+
+        if (!hasEnoughArguments(sender, args, 3)) {
+            return;
+        }
+
+        String titleId = args[2].toLowerCase(Locale.ROOT);
+
+        if (!plugin.getTitleRegistry().titleExists(titleId)) {
+            sender.sendMessage(
+                    "§c! §8› §cNo title with the ID §e" + titleId + " §cexists."
+            );
+            return;
+        }
+
+        if (titleId.equals("newbie")) {
+            sender.sendMessage(
+                    "§c! §8› §cThe title §enewbie §ccannot be deleted."
+            );
+            return;
+        }
+
+        plugin.getTitleRegistry().unregisterTitle(titleId);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PlayerMemory memory = PlayerUtility.getPlayerMemory(player);
+
+            if (memory == null) {
+                continue;
+            }
+
+            boolean owned = memory.getOwnedTitles().removeIf(
+                    ownedTitle -> ownedTitle.equalsIgnoreCase(titleId)
+            );
+
+            boolean equipped = titleId.equalsIgnoreCase(memory.getEquippedTitle());
+
+            if (equipped) {
+                memory.setEquippedTitle("newbie");
+            }
+
+            if (owned || equipped) {
+                plugin.getNametagUtility().updateNametag(player);
+            }
+        }
+
+        sender.sendMessage(
+                "§a✓ §8› §aDeleted title §e" + titleId + "§a."
+        );
+    }
+
+    // Title Give
+    private void handleTitleGive(CommandSender sender, String[] args) {
+
+        if (!hasEnoughArguments(sender, args, 4)) {
+            return;
+        }
+
+        Player target = Bukkit.getPlayerExact(args[2]);
+
+        if (target == null) {
+            sender.sendMessage("§c! §8› §cPlayer not found.");
+            return;
+        }
+
+        String titleId = args[3].toLowerCase(Locale.ROOT);
+
+        if (!plugin.getTitleRegistry().titleExists(titleId)) {
+            sender.sendMessage(
+                    "§c! §8› §cNo title with the ID §e" + titleId + " §cexists."
+            );
+            return;
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(target);
+
+        if (memory == null) {
+            sender.sendMessage("§c! §8› §cCould not load player data.");
+            return;
+        }
+
+        boolean alreadyOwned = memory.getOwnedTitles()
+                .stream()
+                .anyMatch(ownedTitle -> ownedTitle.equalsIgnoreCase(titleId));
+
+        if (alreadyOwned) {
+            sender.sendMessage(
+                    "§c! §8› §e" + target.getName()
+                            + " §calready owns the title §e" + titleId + "§c."
+            );
+            return;
+        }
+
+        memory.getOwnedTitles().add(titleId);
+
+        plugin.getNametagUtility().updateNametag(target);
+
+        sender.sendMessage(
+                "§a✓ §8› §aGave the title §e" + titleId
+                        + " §ato §e" + target.getName() + "§a."
+        );
+    }
+
+    // Title Take
+    private void handleTitleTake(CommandSender sender, String[] args) {
+
+        if (!hasEnoughArguments(sender, args, 4)) {
+            return;
+        }
+
+        Player target = Bukkit.getPlayerExact(args[2]);
+
+        if (target == null) {
+            sender.sendMessage("§c! §8› §cPlayer not found.");
+            return;
+        }
+
+        String titleId = args[3].toLowerCase(Locale.ROOT);
+
+        if (!plugin.getTitleRegistry().titleExists(titleId)) {
+            sender.sendMessage(
+                    "§c! §8› §cNo title with the ID §e" + titleId + " §cexists."
+            );
+            return;
+        }
+
+        if (titleId.equals("newbie")) {
+            sender.sendMessage(
+                    "§c! §8› §cThe title §enewbie §ccannot be taken."
+            );
+            return;
+        }
+
+        PlayerMemory memory = PlayerUtility.getPlayerMemory(target);
+
+        if (memory == null) {
+            sender.sendMessage("§c! §8› §cCould not load player data.");
+            return;
+        }
+
+        boolean owned = memory.getOwnedTitles()
+                .stream()
+                .anyMatch(ownedTitle -> ownedTitle.equalsIgnoreCase(titleId));
+
+        if (!owned) {
+            sender.sendMessage(
+                    "§c! §8› §e" + target.getName()
+                            + " §cdoes not own the title §e" + titleId + "§c."
+            );
+            return;
+        }
+
+        memory.getOwnedTitles().removeIf(
+                ownedTitle -> ownedTitle.equalsIgnoreCase(titleId)
+        );
+
+        boolean equipped = titleId.equalsIgnoreCase(memory.getEquippedTitle());
+
+        if (equipped) {
+            memory.setEquippedTitle("newbie");
+        }
+
+        plugin.getNametagUtility().updateNametag(target);
+
+        sender.sendMessage(
+                "§a✓ §8› §aTook the title §e" + titleId
+                        + " §afrom §e" + target.getName() + "§a."
+        );
+    }
 
 
-
-
+    // Misc.
     private Player getTargetPlayer(CommandSender sender, String name) {
         Player player = Bukkit.getPlayerExact(name);
 

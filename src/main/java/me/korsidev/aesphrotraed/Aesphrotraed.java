@@ -64,10 +64,8 @@ public final class Aesphrotraed extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChatEvent(this), this);
         Bukkit.getPluginManager().registerEvents(new ChunkCleanupEvent(), this);
 
-        getCommand("serverTitles").setExecutor(new ServerTitlesCommand(this, titleRegistry, playerDataManager));
         getCommand("setTitle").setExecutor(new SetTitleCommand(this, titleRegistry, playerDataManager));
         getCommand("friends").setExecutor(new FriendsCommand(this, friendManager));
-        getCommand("economy").setExecutor(new EconomyCommand(this));
         getCommand("pay").setExecutor(new PayCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
         getCommand("admin").setExecutor(new AdminCommand(this));
