@@ -32,3 +32,6 @@ commands:
 
   admin:
     permission: aesphrotraed.admin
+
+  profile:
+    description: Open your Profile GUI.

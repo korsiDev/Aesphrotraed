@@ -4,6 +4,7 @@ import me.korsidev.aesphrotraed.command.*;
 import me.korsidev.aesphrotraed.data.EconomyManager;
 import me.korsidev.aesphrotraed.data.PlayerDataManager;
 import me.korsidev.aesphrotraed.events.LuckPermsListener;
+import me.korsidev.aesphrotraed.profile.ProfileCommand;
 import me.korsidev.aesphrotraed.progression.ProgressionManager;
 import me.korsidev.aesphrotraed.events.ChatEvent;
 import me.korsidev.aesphrotraed.events.ChunkCleanupEvent;
@@ -69,6 +70,7 @@ public final class Aesphrotraed extends JavaPlugin {
         getCommand("pay").setExecutor(new PayCommand(this));
         getCommand("balance").setExecutor(new BalanceCommand(this));
         getCommand("admin").setExecutor(new AdminCommand(this));
+        getCommand("profile").setExecutor(new ProfileCommand());
 
         getLogger().info("Plugin has been enabled.");
 
