@@ -137,6 +137,30 @@ public class BlackjackInventory {
         return item;
     }
 
+    public ItemStack createCardBackItem() {
+        ItemStack item = new ItemStack(Material.PAPER);
+
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta == null) {
+            return item;
+        }
+
+        meta.setDisplayName("§8Hidden Card");
+
+        meta.setCustomModelData(53);
+
+        meta.getPersistentDataContainer().set(
+                blackjackCardKey,
+                PersistentDataType.BYTE,
+                (byte) 1
+        );
+
+        item.setItemMeta(meta);
+
+        return item;
+    }
+
     public boolean isBlackjackCard(ItemStack item) {
 
         if (item == null || item.getType() != Material.PAPER) {
@@ -195,6 +219,27 @@ public class BlackjackInventory {
             }
         }
         return cloned;
+    }
+
+    public void updatePlayerHand(Player player, BlackjackGame game) {
+
+        PlayerInventory inventory = player.getInventory();
+
+        // Hotbar leeren
+        for (int slot = 0; slot < 9; slot++) {
+            inventory.setItem(slot, null);
+        }
+
+        // Karten der Hand in die Hotbar legen
+        for (int i = 0; i < game.getPlayerHand().size(); i++) {
+
+            Card card = game.getPlayerHand().get(i);
+
+            inventory.setItem(
+                    i,
+                    createCardItem(card)
+            );
+        }
     }
 
     private record InventorySnapshot(

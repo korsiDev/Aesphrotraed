@@ -39,6 +39,8 @@ public class BlackjackManager {
         BlackjackGame game = new BlackjackGame(player, bet);
         game.start();
 
+        blackjackInventory.updatePlayerHand(player, game);
+
         activeGames.put(player.getUniqueId(), game);
 
         return true;
