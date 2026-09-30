@@ -36,6 +36,7 @@ public class BlackjackListener implements Listener {
                 Card card = game.hit();
                 if (card != null) {
                     manager.getBlackjackInventory().updatePlayerHand(player, game);
+                    manager.getBlackjackDisplay().updatePlayerDisplay(player, game);
                 }
 
             } else if (action.isRightClick() && manager.getBlackjackInventory().isBlackjackCard(item)) {

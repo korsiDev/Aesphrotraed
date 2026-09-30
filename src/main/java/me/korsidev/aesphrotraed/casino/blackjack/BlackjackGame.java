@@ -1,5 +1,6 @@
 package me.korsidev.aesphrotraed.casino.blackjack;
 
+import me.korsidev.aesphrotraed.Aesphrotraed;
 import me.korsidev.aesphrotraed.casino.cards.Card;
 import me.korsidev.aesphrotraed.casino.cards.CardRank;
 import me.korsidev.aesphrotraed.casino.cards.Deck;
@@ -31,6 +32,8 @@ public class BlackjackGame {
 
     private State state;
 
+    private String loggerPrefix;
+
     public BlackjackGame(Player player, long bet) {
         this.player = player;
         this.bet = bet;
@@ -39,6 +42,8 @@ public class BlackjackGame {
         this.deck.shuffle();
 
         this.state = State.WAITING;
+
+        loggerPrefix = "[BJ " + player.getName() + "] ";
     }
 
     public void start() {
@@ -49,11 +54,16 @@ public class BlackjackGame {
         playerHand.clear();
         dealerHand.clear();
 
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + player.getName() + "started a Blackjack game.");
+
         playerHand.add(deck.draw());
         dealerHand.add(deck.draw());
 
         playerHand.add(deck.draw());
         dealerHand.add(deck.draw());
+
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Player: " + getPlayerHand().toString());
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Dealer: " + getDealerHand().toString());
 
         if (isBlackjack(playerHand)) {
             state = State.BLACKJACK;
@@ -71,8 +81,16 @@ public class BlackjackGame {
         Card card = deck.draw();
         playerHand.add(card);
 
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Player hit");
+
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Player: " + getPlayerHand().toString());
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Dealer: " + getDealerHand().toString());
+
         if (isBust(playerHand)) {
             state = State.BUST;
+
+            Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Player bust");
+
         }
 
         return card;
@@ -83,6 +101,8 @@ public class BlackjackGame {
             return;
         }
 
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Player stand");
+
         state = State.DEALER_TURN;
 
         playDealer();
@@ -92,6 +112,8 @@ public class BlackjackGame {
     private void playDealer() {
         while (calculateHandValue(dealerHand) < 17) {
             dealerHand.add(deck.draw());
+            Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Player: " + getPlayerHand().toString());
+            Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + "Dealer: " + getDealerHand().toString());
         }
     }
 

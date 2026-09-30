@@ -15,9 +15,12 @@ public class BlackjackManager {
 
     private final BlackjackInventory blackjackInventory;
 
+    private final BlackjackDisplay blackjackDisplay;
+
     public BlackjackManager(Aesphrotraed plugin) {
         this.plugin = plugin;
         this.blackjackInventory = new BlackjackInventory(plugin);
+        this.blackjackDisplay = new BlackjackDisplay(this);
     }
 
     public boolean hasGame(Player player) {
@@ -60,6 +63,10 @@ public class BlackjackManager {
 
     public BlackjackInventory getBlackjackInventory() {
         return blackjackInventory;
+    }
+
+    public BlackjackDisplay getBlackjackDisplay() {
+        return blackjackDisplay;
     }
 
     public Map<UUID, BlackjackGame> getActiveGames() {
