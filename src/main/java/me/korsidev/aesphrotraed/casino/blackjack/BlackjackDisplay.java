@@ -7,14 +7,13 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BlackjackDisplay {
 
     private final BlackjackManager manager;
 
-    private final List<ItemDisplay> playerDisplays = new ArrayList<>();
+    private final Map<UUID, List<ItemDisplay>> playerDisplays = new HashMap<>();
 
     public BlackjackDisplay(BlackjackManager manager) {
         this.manager = manager;
@@ -25,6 +24,11 @@ public class BlackjackDisplay {
         List<Card> playerHand = game.getPlayerHand();
 
         Location loc = player.getLocation();
+
+        List<ItemDisplay> displays = playerDisplays.computeIfAbsent(
+                player.getUniqueId(),
+                uuid -> new ArrayList<>()
+        );
 
         for (int i = 0; i < playerHand.size(); i++) {
             Card card = playerHand.get(i);
@@ -49,26 +53,32 @@ public class BlackjackDisplay {
 
             display.setBillboard(Display.Billboard.CENTER);
 
-            playerDisplays.add(display);
+            displays.add(display);
         }
 
     }
 
-    public void clearPlayerDisplay() {
+    public void clearPlayerDisplay(Player player) {
 
-        for (ItemDisplay display : playerDisplays) {
+        List<ItemDisplay> displays = playerDisplays.remove(player.getUniqueId());
+
+        if (displays == null) {
+            return;
+        }
+
+        for (ItemDisplay display : displays) {
 
             if (!display.isDead()) {
                 display.remove();
             }
         }
 
-        playerDisplays.clear();
+        playerDisplays.remove(player.getUniqueId());
     }
 
     public void updatePlayerDisplay(Player player, BlackjackGame game) {
 
-        clearPlayerDisplay();
+        clearPlayerDisplay(player);
 
         createPlayerDisplay(player, game);
     }

@@ -54,7 +54,7 @@ public class BlackjackGame {
         playerHand.clear();
         dealerHand.clear();
 
-        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + player.getName() + "started a Blackjack game.");
+        Aesphrotraed.getPlugin(Aesphrotraed.class).getLogger().info(loggerPrefix + player.getName() + " started a Blackjack game.");
 
         playerHand.add(deck.draw());
         dealerHand.add(deck.draw());
