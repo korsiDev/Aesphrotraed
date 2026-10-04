@@ -42,16 +42,19 @@ public class BlackjackManager {
         BlackjackGame game = new BlackjackGame(player, bet);
         game.start();
 
+        activeGames.put(player.getUniqueId(), game);
+
         blackjackInventory.updatePlayerHand(player, game);
 
-        activeGames.put(player.getUniqueId(), game);
+        blackjackDisplay.createPlayerDisplay(player, game);
 
         return true;
     }
 
     public void endGame(Player player) {
+        removeGame(player);
 
-        activeGames.remove(player.getUniqueId());
+        blackjackDisplay.clearPlayerDisplay(player);
 
         blackjackInventory.restore(player);
     }

@@ -14,6 +14,7 @@ public class BlackjackDisplay {
     private final BlackjackManager manager;
 
     private final Map<UUID, List<ItemDisplay>> playerDisplays = new HashMap<>();
+    private final Map<UUID, List<ItemDisplay>> dealerDisplays = new HashMap<>();
 
     public BlackjackDisplay(BlackjackManager manager) {
         this.manager = manager;
@@ -72,8 +73,6 @@ public class BlackjackDisplay {
                 display.remove();
             }
         }
-
-        playerDisplays.remove(player.getUniqueId());
     }
 
     public void updatePlayerDisplay(Player player, BlackjackGame game) {
